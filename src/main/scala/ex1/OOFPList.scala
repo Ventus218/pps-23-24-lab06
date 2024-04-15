@@ -49,9 +49,7 @@ enum List[A]:
 
   def length(): Int = foldLeft(0)((l, _) => l + 1)
     
-  def zipWithIndex: List[(A, Int)] = 
-    val listLength = this.length()
-    foldRight(Nil[(A, Int)]())((e, b) => ((e, listLength - b.length() - 1)) :: b)
+  def zipWithIndex: List[(A, Int)] = foldRight((Nil[(A, Int)](), this.length() - 1))((e, li) => ((e, li._2) :: li._1, li._2 - 1))._1
   
   def partition(predicate: A => Boolean): (List[A], List[A]) = foldRight(List(), List())((e, ll) => if predicate(e) then (e :: ll._1, ll._2) else (ll._1, e :: ll._2))
 
