@@ -53,7 +53,12 @@ enum List[A]:
   
   def partition(predicate: A => Boolean): (List[A], List[A]) = foldRight(List(), List())((e, ll) => if predicate(e) then (e :: ll._1, ll._2) else (ll._1, e :: ll._2))
 
-  def span(predicate: A => Boolean): (List[A], List[A]) = ???
+  def reverse(): List[A] = foldLeft(List())((l, e) => e :: l)
+
+  def span(predicate: A => Boolean): (List[A], List[A]) = 
+    val foldRes = foldLeft(List[A](), List[A](), false)((llf, e) => if (predicate(e) || llf._3) then (llf._1, e :: llf._2, true) else (e :: llf._1, llf._2, llf._3))
+    (foldRes._1, foldRes._2)
+  
   def takeRight(n: Int): List[A] = ???
   def collect(predicate: PartialFunction[A, A]): List[A] = ???
 // Factories
@@ -75,8 +80,10 @@ object Test extends App:
   println(reference.length() == 4)
   println(reference.zipWithIndex == List((1, 0), (2, 1), (3, 2), (4, 3)))
   println(reference.partition(_ % 2 == 0) == (List(2, 4), List(1, 3)))
+  println(reference.span(_ % 2 != 0))
   println(reference.span(_ % 2 != 0) == (List(1), List(2, 3, 4)))
   println(reference.span(_ < 3) == (List(1, 2), List(3, 4)))
+  println(reference.reverse() == List(4, 3, 2, 1))
   println(reference.reduce(_ + _) == 10 )
   println(List(10).reduce(_ + _) == 10)
   println(reference.takeRight(3) == List(2, 3, 4))
