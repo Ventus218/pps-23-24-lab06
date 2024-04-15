@@ -53,7 +53,8 @@ enum List[A]:
     val listLength = this.length()
     foldRight(Nil[(A, Int)]())((e, b) => ((e, listLength - b.length() - 1)) :: b)
   
-  def partition(predicate: A => Boolean): (List[A], List[A]) = ???
+  def partition(predicate: A => Boolean): (List[A], List[A]) = foldRight(List(), List())((e, ll) => if predicate(e) then (e :: ll._1, ll._2) else (ll._1, e :: ll._2))
+
   def span(predicate: A => Boolean): (List[A], List[A]) = ???
   def takeRight(n: Int): List[A] = ???
   def collect(predicate: PartialFunction[A, A]): List[A] = ???
