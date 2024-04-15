@@ -49,7 +49,10 @@ enum List[A]:
 
   def length(): Int = foldLeft(0)((l, _) => l + 1)
     
-  def zipWithIndex: List[(A, Int)] = ???
+  def zipWithIndex: List[(A, Int)] = 
+    val listLength = this.length()
+    foldRight(Nil[(A, Int)]())((e, b) => ((e, listLength - b.length() - 1)) :: b)
+  
   def partition(predicate: A => Boolean): (List[A], List[A]) = ???
   def span(predicate: A => Boolean): (List[A], List[A]) = ???
   def takeRight(n: Int): List[A] = ???
