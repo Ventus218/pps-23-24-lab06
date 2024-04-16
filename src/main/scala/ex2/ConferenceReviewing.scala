@@ -88,7 +88,10 @@ object ConferenceReviewing:
 			assert(reviews.contains(article))
 			reviews.getOrElse(article, List()).map(_.scoreFor(question)).sorted(Ordering.Int)
 
-		override def averageFinalScore(article: Int): Double = ???
+		override def averageFinalScore(article: Int): Double =
+			assert(reviews.contains(article))
+			val articleReviews = reviews.getOrElse(article, List())
+			articleReviews.map(_.scoreFor(Question.FINAL)).sum / articleReviews.length.toDouble
 
 		override def loadReview(article: Int, relevance: Int, significance: Int, confidence: Int, `final`: Int): Unit =
 			val articleReviews = reviews.getOrElse(article, List())
