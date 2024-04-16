@@ -78,7 +78,13 @@ object ConferenceReviewing:
 
 		private var reviews = Map[Int, List[Review]]()
 
-		override def averageWeightedFinalScoreMap(): Map[Int, Double] = ???
+		override def averageWeightedFinalScoreMap(): Map[Int, Double] =
+			reviews.keySet.map(article => article -> weightedFinalScore(article)).toMap
+
+		private def weightedFinalScore(article: Int): Double =
+			val articleReviews = reviews.get(article)
+			assert(articleReviews.isDefined)
+			articleReviews.get.map(review => review.confidence * review.`final` / 10d).sum / articleReviews.get.length.toDouble
 
 		override def sortedAcceptedArticles(): List[(Int, Double)] =
 			acceptedArticlesWithAverageFinalScore().toList.sortWith((before, after) => before._2 < after._2)
