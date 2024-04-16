@@ -82,7 +82,8 @@ object ConferenceReviewing:
 
 		override def sortedAcceptedArticles(): List[(Int, Double)] = ???
 
-		override def acceptedArticles(): Set[Int] = ???
+		override def acceptedArticles(): Set[Int] =
+			reviews.filter((article, articleReviews) => averageFinalScore(article) > 5 && articleReviews.exists(_.relevance >= 8)).keySet
 
 		override def orderedScores(article: Int, question: Question): List[Int] =
 			assert(reviews.contains(article))
