@@ -1,6 +1,6 @@
 package ex2
 
-import scala.collection.*
+import scala.collection.immutable.Map
 import ex1.List.apply
 
 trait ConferenceReviewing:
@@ -69,6 +69,9 @@ object ConferenceReviewing:
 	def apply(): ConferenceReviewing = ConferenceReviewingImpl()
 
 	private class ConferenceReviewingImpl extends ConferenceReviewing:
+		private case class Review(val article: Int, val relevance: Int, val significance: Int, val confidence: Int, val `final`: Int):
+
+		private var reviews = Map[Int, List[Review]]()
 
 		override def averageWeightedFinalScoreMap(): Map[Int, Double] = ???
 
@@ -80,8 +83,14 @@ object ConferenceReviewing:
 
 		override def averageFinalScore(article: Int): Double = ???
 
-		override def loadReview(article: Int, relevance: Int, significance: Int, confidence: Int, fin: Int): Unit = ???
+		override def loadReview(article: Int, relevance: Int, significance: Int, confidence: Int, `final`: Int): Unit =
+			val articleReviews = reviews.getOrElse(article, List())
+			reviews = reviews + (article -> articleReviews.appended(Review(article, relevance = relevance, significance = significance, confidence = confidence, `final` = `final`)))
 
-		override def loadReview(article: Int, scores: Map[Question, Int]): Unit = ???
-
-	
+		override def loadReview(article: Int, scores: Map[Question, Int]): Unit =
+			val relevance = scores.get(Question.RELEVANCE)
+			val significance = scores.get(Question.SIGNIFICANCE)
+			val confidence = scores.get(Question.CONFIDENCE)
+			val `final` = scores.get(Question.FINAL)
+			assert(relevance.isDefined || significance.isDefined || confidence.isDefined || `final`.isDefined)
+			loadReview(article, relevance = relevance.get, significance = significance.get, confidence = confidence.get, `final` = `final`.get)
