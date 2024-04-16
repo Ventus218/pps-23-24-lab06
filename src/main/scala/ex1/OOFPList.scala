@@ -65,7 +65,8 @@ enum List[A]:
   
   def takeRight(n: Int): List[A] = foldRight((List[A](), n)) ((e, ln) => if ln._2 > 0 then (e :: ln._1, ln._2 - 1) else ln)._1
 
-  def collect(predicate: PartialFunction[A, A]): List[A] = ???
+  def collect(predicate: PartialFunction[A, A]): List[A] = flatMap(e => if predicate.isDefinedAt(e) then List(predicate.apply(e)) else List())
+
 // Factories
 object List:
 
