@@ -80,10 +80,16 @@ object ConferenceReviewing:
 
 		override def averageWeightedFinalScoreMap(): Map[Int, Double] = ???
 
-		override def sortedAcceptedArticles(): List[(Int, Double)] = ???
+		override def sortedAcceptedArticles(): List[(Int, Double)] =
+			acceptedArticlesWithAverageFinalScore().toList.sortWith((before, after) => before._2 < after._2)
 
 		override def acceptedArticles(): Set[Int] =
-			reviews.filter((article, articleReviews) => averageFinalScore(article) > 5 && articleReviews.exists(_.relevance >= 8)).keySet
+			acceptedArticlesWithAverageFinalScore().map((article, _) => article).toSet
+
+		private def acceptedArticlesWithAverageFinalScore(): Iterable[(Int, Double)] =
+			reviews.map((article, articleReviews) => (article, articleReviews, averageFinalScore(article)))
+				.filter((article, articleReviews, score) => score > 5 && articleReviews.exists(_.relevance >= 8))
+				.map((article, articleReviews, score) => (article, score))
 
 		override def orderedScores(article: Int, question: Question): List[Int] =
 			assert(reviews.contains(article))
