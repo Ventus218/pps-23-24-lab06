@@ -70,6 +70,11 @@ object ConferenceReviewing:
 
 	private class ConferenceReviewingImpl extends ConferenceReviewing:
 		private case class Review(val article: Int, val relevance: Int, val significance: Int, val confidence: Int, val `final`: Int):
+			def scoreFor(question: Question): Int = question match
+				case Question.RELEVANCE => relevance
+				case Question.SIGNIFICANCE => significance
+				case Question.CONFIDENCE => confidence
+				case Question.FINAL => `final`
 
 		private var reviews = Map[Int, List[Review]]()
 
@@ -79,7 +84,9 @@ object ConferenceReviewing:
 
 		override def acceptedArticles(): Set[Int] = ???
 
-		override def orderedScores(article: Int, question: Question): List[Int] = ???
+		override def orderedScores(article: Int, question: Question): List[Int] =
+			assert(reviews.contains(article))
+			reviews.getOrElse(article, List()).map(_.scoreFor(question)).sorted(Ordering.Int)
 
 		override def averageFinalScore(article: Int): Double = ???
 
