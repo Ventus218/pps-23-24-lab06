@@ -83,7 +83,7 @@ object ConferenceReviewing:
 
 		private def weightedFinalScore(article: Int): Double =
 			val articleReviews = reviews.get(article)
-			assert(articleReviews.isDefined)
+			require(articleReviews.isDefined)
 			articleReviews.get.map(review => review.confidence * review.`final` / 10d).sum / articleReviews.get.length.toDouble
 
 		override def sortedAcceptedArticles(): List[(Int, Double)] =
@@ -98,11 +98,11 @@ object ConferenceReviewing:
 				.map((article, articleReviews, score) => (article, score))
 
 		override def orderedScores(article: Int, question: Question): List[Int] =
-			assert(reviews.contains(article))
+			require(reviews.contains(article))
 			reviews.getOrElse(article, List()).map(_.scoreFor(question)).sorted(Ordering.Int)
 
 		override def averageFinalScore(article: Int): Double =
-			assert(reviews.contains(article))
+			require(reviews.contains(article))
 			val articleReviews = reviews.getOrElse(article, List())
 			articleReviews.map(_.scoreFor(Question.FINAL)).sum / articleReviews.length.toDouble
 
@@ -115,5 +115,5 @@ object ConferenceReviewing:
 			val significance = scores.get(Question.SIGNIFICANCE)
 			val confidence = scores.get(Question.CONFIDENCE)
 			val `final` = scores.get(Question.FINAL)
-			assert(relevance.isDefined || significance.isDefined || confidence.isDefined || `final`.isDefined)
+			require(relevance.isDefined || significance.isDefined || confidence.isDefined || `final`.isDefined)
 			loadReview(article, relevance = relevance.get, significance = significance.get, confidence = confidence.get, `final` = `final`.get)
